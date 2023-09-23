@@ -18,7 +18,7 @@ h1 {
 }
 
 .container {
-  width: min(90%, 500px);
+  width: min(90%, 800px);
   margin-inline: auto;
   margin-top: 4rem;
 }
@@ -52,7 +52,7 @@ h1 {
 
 #title::placeholder,
 textarea::placeholder {
-  color: white;
+  color: rgba(255, 255, 255, 0.664);
 }
 
 textarea {
@@ -69,6 +69,17 @@ textarea {
   height: 200px;
   letter-spacing: 2px;
   font-weight: bold;
+  line-height: 1.4;
+}
+
+textarea::-webkit-scrollbar {
+  width: 5px;
+}
+textarea:-webkit-scrollbar-thumb {
+  background-color: black;
+}
+textarea::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 .btn {
@@ -84,6 +95,7 @@ textarea {
 .btn:hover {
   background-color: hotpink;
   scale: 1.1;
+  color: white;
 }
 
 @media (max-width: 50em) {
@@ -121,12 +133,19 @@ textarea {
 }
 .note-title {
   font-size: 2rem;
-  color: black;
+  background-color: black;
+  border-radius: 30px;
+  color: white;
   font-weight: bold;
+  padding: 0.5em;
 }
 
 .note-description {
   letter-spacing: 1.5px;
+  background-color: white;
+  color: black;
+  padding: 1em;
+  border-radius: 30px;
 }
 
 .btn-container {
