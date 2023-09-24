@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Croissant+One&display=swap");
+html {
+  scroll-behavior: smooth;
+}
 * {
   margin: 0;
   padding: 0;
@@ -128,7 +131,7 @@ textarea::-webkit-scrollbar-track {
   box-shadow: 20px 20px 85px #a00770;
 }
 
-.note-num {
+.label {
   font-size: 1.3rem;
 }
 .note-title {
