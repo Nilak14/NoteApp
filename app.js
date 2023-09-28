@@ -5,7 +5,8 @@ const titleInputElement = document.querySelector('#title')
 const descriptionInputElement = document.querySelector('#description')
 const noteContainer = document.querySelector('.note-list-container')
 
-let noteNum = 1;
+let noteNum = getNoteNum();
+console.log(noteNum)
 let editElementTitle;
 let editElementDescription;
 let editID = ''
@@ -25,6 +26,7 @@ function addNotes(e) {
     let description = descriptionInputElement.value
     let uniqueId = new Date().getTime().toString();
     if (title && description && isEditing === false) {
+        noteNum++
         const element = document.createElement('section')
         element.classList.add('note');
         let uniqueCode = document.createAttribute('data-id')
@@ -48,15 +50,17 @@ function addNotes(e) {
 
         const editButton = element.querySelector('.edit')
         editButton.addEventListener('click', editNote)
+        addToLocalStorage(uniqueId, title, description);
+        addNoteNumLocalStorage(noteNum)
+        console.log(getNoteNum())
 
-        addToLocalStorage(uniqueId, noteNum, title, description);
-        noteNum++
         setBackToDefault()
     }
     else if (title && description && isEditing === true) {
         editElementTitle.innerText = titleInputElement.value
         editElementDescription.innerText = descriptionInputElement.value
         editElementTitle.parentElement.scrollIntoView();
+        editFromLocalStorage(editID, editElementTitle.innerText, editElementDescription.innerText)
         setBackToDefault()
     }
     else {
@@ -70,6 +74,7 @@ function deleteNote(e) {
     let deleteElementId = deleteElement.dataset.id;
     let count = 1;
     noteNum--
+    addNoteNumLocalStorage(noteNum)
     noteContainer.removeChild(deleteElement)
     document.querySelectorAll('.num').forEach(note => {
         note.innerText = count
@@ -103,8 +108,8 @@ function setBackToDefault() {
 }
 
 // local storage
-function addToLocalStorage(uniqueId, noteNum, title, description) {
-    let notesObj = { uniqueId, noteNum, title, description };
+function addToLocalStorage(uniqueId, title, description) {
+    let notesObj = { uniqueId, title, description };
     let noteArr = getFromLocalStorage();
     noteArr.push(notesObj)
     localStorage.setItem('notes', JSON.stringify(noteArr));
@@ -125,10 +130,33 @@ function removeFromLocalStorage(id) {
     localStorage.setItem('notes', JSON.stringify(noteArr))
 }
 
+function addNoteNumLocalStorage(num) {
+    let noteNum = getNoteNum()
+    noteNum = num
+    localStorage.setItem('noteNum', JSON.stringify(noteNum))
+}
+
+function getNoteNum() {
+    return JSON.parse(localStorage.getItem('noteNum')) || 0
+}
+
+
+function editFromLocalStorage(id, title, description) {
+    let noteArr = getFromLocalStorage()
+    noteArr = noteArr.map(note => {
+        if (note.uniqueId === id) {
+            note.title = title
+            note.description = description
+        }
+        return note
+    })
+    localStorage.setItem('notes', JSON.stringify(noteArr));
+}
 
 // load starting
 function load() {
     let noteArr = getFromLocalStorage();
+    let noteNumber = 1;
     noteArr.forEach(singleNote => {
         const element = document.createElement('section')
         element.classList.add('note');
@@ -137,7 +165,7 @@ function load() {
         element.setAttributeNode(uniqueCode)
 
         element.innerHTML = `
-        <p class="note-num label">Note <span class="num">${singleNote.noteNum}</span></p>
+        <p class="note-num label">Note <span class="num">${noteNumber}</span></p>
         <p class = "label">Title</p>
                 <p class="note-title" data-title='${singleNote.uniqueId}'>${singleNote.title}</p>
                 <p class = "label">Notes</p>
@@ -147,6 +175,7 @@ function load() {
                     <button class="edit btn">Edit</button>
                 </div>
         `
+        noteNumber++
         noteContainer.appendChild(element)
         const deleteButton = element.querySelector('.delete')
         deleteButton.addEventListener('click', deleteNote)
@@ -156,3 +185,5 @@ function load() {
     })
 
 }
+
+// console.log(getFromLocalStorage());
